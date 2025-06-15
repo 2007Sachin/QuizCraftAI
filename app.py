@@ -49,11 +49,16 @@ def generate_quiz(topic):
             max_tokens=4000
         )
         quiz_json = response.choices[0].message.content
-        questions = json.loads(quiz_json)
-        logger.debug(f"Generated questions: {json.dumps(questions, indent=2)}")
-        return questions
+        try:
+            questions = json.loads(quiz_json)
+            logger.debug(f"Generated questions: {json.dumps(questions, indent=2)}")
+            return questions
+        except json.JSONDecodeError as je:
+            logger.error(f"Error decoding JSON from LLM: {str(je)}")
+            logger.error(f"Received JSON string: {quiz_json}")
+            return None # Or handle as appropriate, e.g., by trying to fix the JSON or returning an error message
     except Exception as e:
-        logger.error(f"Error generating quiz: {str(e)}")
+        logger.error(f"Error generating quiz (OpenAI API or other): {str(e)}")
         return None
 
 # Save result to leaderboard
