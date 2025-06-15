@@ -3,4 +3,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-OPENAI_API_KEY = "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"
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+
+if OPENAI_API_KEY is None:
+    raise ValueError("OPENAI_API_KEY not found in environment variables. Please set it in a .env file or as an environment variable.")
